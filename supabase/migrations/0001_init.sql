@@ -10,7 +10,7 @@ create table if not exists public.tickets (
 );
 create index if not exists tickets_user_created_idx on public.tickets(user_id,created_at desc);
 create index if not exists tickets_user_status_idx on public.tickets(user_id,status);
-create or replace function public.set_updated_at() returns trigger language plpgsql as $$ begin new.updated_at=now(); new.user_id=old.user_id; new.created_at=old.created_at; return new; end; $$;
+create or replace function public.set_updated_at() returns trigger language plpgsql as $$ begin if new.user_id<>old.user_id then raise exception 'user_id is immutable'; end if; if new.created_at<>old.created_at then raise exception 'created_at is immutable'; end if; new.updated_at=now(); return new; end; $$;
 drop trigger if exists tickets_updated_at on public.tickets;
 create trigger tickets_updated_at before update on public.tickets for each row execute function public.set_updated_at();
 alter table public.tickets enable row level security;
