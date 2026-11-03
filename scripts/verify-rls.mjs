@@ -50,12 +50,12 @@ const read = await b.from('tickets').select().eq('id', id)
 ok('B cannot read A ticket', !read.data?.length)
 
 // 4. User B cannot update A ticket
-const upd = await b.from('tickets').update({ title: 'hack' }).eq('id', id)
-ok('B cannot update A ticket', upd.error || upd.count === 0)
+const upd = await b.from('tickets').update({ title: 'hack' }, { count: 'exact' }).eq('id', id)
+ok('B cannot update A ticket', !!upd.error || upd.count === 0)
 
 // 5. User B cannot delete A ticket
-const del = await b.from('tickets').delete().eq('id', id)
-ok('B cannot delete A ticket', del.error || del.count === 0)
+const del = await b.from('tickets').delete({ count: 'exact' }).eq('id', id)
+ok('B cannot delete A ticket', !!del.error || del.count === 0)
 
 // 6. User B cannot insert foreign user_id
 const foreign = await b.from('tickets').insert({
@@ -68,8 +68,8 @@ const foreign = await b.from('tickets').insert({
 ok('B cannot insert foreign user_id', !!foreign.error)
 
 // 7. User A cannot change user_id
-const own = await a.from('tickets').update({ user_id: crypto.randomUUID() }).eq('id', id)
-ok('A cannot change user_id', !!own.error)
+const own = await a.from('tickets').update({ user_id: crypto.randomUUID() }).eq('id', id).select().single()
+ok('A cannot change user_id', !!own.error || own.data?.user_id === uid)
 
 // 8. Invalid category rejected
 const badCat = await a.from('tickets').insert({
