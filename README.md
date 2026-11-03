@@ -1,6 +1,6 @@
 # Заявки на автоматизацию
 
-Vite + React + TypeScript приложение для заявок сотрудников, Supabase Auth/Postgres/RLS и Vercel.
+Vite + React + TypeScript приложение для заявок сотрудников, Supabase Auth/Postgres/RLS и GitHub Pages.
 
 ## Запуск
 
@@ -23,3 +23,4 @@ npm run dev
 ## Проверки
 
 `npm run build`, `npm run lint`, `npm run test`; интеграционный `node scripts/verify-rls.mjs` требует переменных тестовых пользователей (см. `docs/SUPABASE_SETUP.md`).
+
